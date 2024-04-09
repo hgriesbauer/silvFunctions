@@ -18,6 +18,6 @@ Imports:
     tibble,
     sf,
     stringr
-    
-    
-  
+Depends: 
+    R (>= 2.10)
+LazyData: true
