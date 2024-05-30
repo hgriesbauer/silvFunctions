@@ -39,6 +39,20 @@ af1_clim \%>\%
 filter(var=="PPT") \%>\% # filter for precipitation data
 arrange(year) \%>\%
 column_to_rownames("year") \%>\% # remember this step if you have year in column!
+dplyr::select(-var) \%>\% # have to remove all non-climate columns from data frame
 create_climate_seasons(windows=c(3,6))
+
+# Apply function efficiently to data frame with more than one climate variable
+# Note the code below only uses type="mean".
+unique(af1_clim$var) \%>\%
+map_dfr(~af1_clim \%>\%
+       filter(var==.x) \%>\%
+       column_to_rownames("year") \%>\%
+       dplyr::select(-var) \%>\%
+       create_climate_seasons(windows=c(1,3,6)) \%>\%
+       add_column(var=.x,.before="window")) \%>\%
+mutate(var=factor(var))
+
+
 
 }
