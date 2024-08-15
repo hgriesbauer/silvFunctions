@@ -99,8 +99,7 @@ list_tree_neighbour<-function(x,buffer_radius,plot_radius=12.6,ids,diam=NULL,wt=
   # determine which tree buffers overlap
   tree_overlap<-
     x %>%
-    sf::st_buffer(dist=buffer_radius) %>%
-    sf::st_overlaps() %>%
+    sf::st_is_within_distance(dist=buffer_radius) %>%
     as.matrix() %>%
     as.data.frame() %>%
     setNames(ids) %>%

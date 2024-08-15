@@ -53,7 +53,7 @@ corr_boot<-function(dat,x,y,nboot=1000) {
 
   dat<-
     as.data.frame(dat) %>%
-    dplyr::select(all_of(x),all_of(y))
+    dplyr::select(tidyselect::all_of(x),tidyselect::all_of(y))
 
   if(sd(dat[,1],na.rm=T)==0 | sd(dat[,2],na.rm=T)==0) {
 
@@ -76,20 +76,20 @@ corr_boot<-function(dat,x,y,nboot=1000) {
 
   # Extract correlation coefficient confidence limits
   cor_ci<-
-    boot(dat,
+    boot::boot(dat,
          statistic = function(data, i) {
            cor(data[i, 1], data[i, 2], method='pearson',use="pairwise.complete.obs")
          },
          R = nboot) %>%
-    boot.ci(type="bca")
+    boot::boot.ci(type="bca")
 
     out<-
     data.frame(corr_coef=cor_out$estimate,
                   p_value=cor_out$p.value,
-               n=nrow(drop_na(dat)),
+               n=nrow(tidyr::drop_na(dat)),
                   LCL=cor_ci$bca[4],
                   UCL=cor_ci$bca[5]) %>%
-    mutate(SIG=ifelse(sum(sign(c(LCL,UCL)))==0,"FALSE","TRUE"))
+    dplyr::mutate(SIG=ifelse(sum(sign(c(LCL,UCL)))==0,"FALSE","TRUE"))
   } # end if statement
 
   return(out)
